@@ -4,8 +4,8 @@ from uuid import UUID
 from datetime import datetime
 
 class ProjectRequest(BaseModel):
-    name: str = Field(..., max_length=100)
-    description = Optional[str] = Field(None, max_length=500)
+    name: str= Field(..., max_length=100)
+    description: Optional[str] = Field(None, max_length=500)
     owner_id: UUID
     
 
