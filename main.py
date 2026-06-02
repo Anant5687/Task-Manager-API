@@ -1,8 +1,12 @@
 from fastapi import FastAPI
 from routes.user_routes import router as user_router
+from db.conn import create_db
+
 
 app = FastAPI()
 app.include_router(user_router)
+
+create_db()
 
 @app.get("/")
 def read_root():
