@@ -35,3 +35,7 @@ class UserService:
         db.refresh(user)
 
         return user
+    
+    @staticmethod
+    def get_users(db: Session):
+        return db.query(User).all()
