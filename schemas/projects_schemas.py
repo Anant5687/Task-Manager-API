@@ -9,12 +9,21 @@ class ProjectRequest(BaseModel):
     owner_id: UUID
     
 
-class ProjectResponse(BaseModel):
+class ProjectData(BaseModel):
     id: UUID
     name: str
     description: Optional[str]
     owner_id: UUID
     created_at: datetime
 
+    class Config:
+        from_attributes = True
+
+
+class ProjectResponse(BaseModel):
+    status: int
+    data: ProjectData
+    message: str
+    
     class Config:
         from_attributes = True

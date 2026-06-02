@@ -10,7 +10,7 @@ from uuid import uuid4
 class ProjectService:
     @staticmethod
     def create_project(project_req:ProjectRequest, db: Session) -> ProjectResponse:
-        is_user = db.query(User).filter(str(User.id) == str(project_req.owner_id)).first()
+        is_user = db.query(User).filter(User.id == str(project_req.owner_id)).first()
 
         if not is_user:
             raise HTTPException(

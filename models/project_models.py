@@ -1,7 +1,8 @@
 from sqlalchemy import Column, Integer, String, TIMESTAMP
+from db.conn import BASE
 
 
-class Project():
+class Project(BASE):
     __tablename__ = 'projects'
 
     id = Column(String, primary_key=True)
