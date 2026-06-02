@@ -9,6 +9,8 @@ from schemas.projects_schemas import (
 )
 from services.projects_service import ProjectService
 
+from schemas.tasks_schemas import AllTaskResponse, TaskResponse, TaskCreateRequest
+
 router = APIRouter(prefix="/project", tags=["Projects"])
 
 
@@ -40,3 +42,15 @@ def update_project(id: str, data: UpdateProject, db: Session = Depends(get_db)):
 @router.delete("/{id}", response_model=ProjectResponse)
 def delete_project(id: str, user_id: str, db: Session = Depends(get_db)):
     return ProjectService.delete_project(id, user_id, db)
+
+
+@router.get("/{p_id}/tasks", response_model=AllTaskResponse)
+def get_all_task_in_project(p_id: str, db: Session = Depends(get_db)):
+    return ProjectService.get_task_in_project(p_id, db)
+
+
+@router.post("/{p_id}/tasks", response_model=TaskResponse)
+def create_task(
+    p_id: str, data: TaskCreateRequest, db: Session = Depends(get_db)
+):
+    return ProjectService.create_task(p_id, data, db)

@@ -11,6 +11,9 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 from uuid import uuid4
 
+from schemas.tasks_schemas import TaskCreateRequest, TaskResponse, AllTaskResponse
+from models.task_models import TaskModel
+
 
 class ProjectService:
     @staticmethod
@@ -118,4 +121,36 @@ class ProjectService:
             "status": 200,
             "message": "Project deleted succesfully",
             "data": project,
+        }
+
+    @staticmethod
+    def get_task_in_project(pid: str, db: Session) -> AllTaskResponse:
+        project = ProjectService.get_project(pid, db)
+
+        tasks = db.query(TaskModel).filter(TaskModel.project_id == pid).all()
+
+        return {"status": 200, "message": "Tasks with the project", "data": tasks}
+
+    @staticmethod
+    def create_task(pid: str, data: TaskCreateRequest, db: Session) -> TaskResponse:
+        project = ProjectService.get_project(pid, db)
+
+        task = TaskModel(
+            id=str(uuid4()),
+            title=data.title,
+            description=data.description,
+            due_date=data.due_date,
+            status=data.status,
+            priority=data.priority,
+            project_id=pid,
+        )
+
+        db.add(task)
+        db.commit()
+        db.refresh(task)
+
+        return {
+            "status": 201,
+            "data": task,
+            "message": "Task created successfully",
         }
