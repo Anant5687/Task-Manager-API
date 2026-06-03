@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from routes.user_routes import router as user_router
 from routes.projects_routes import router as project_router
-from routes.tasks_routes import router as tassk_router
+from routes.tasks_routes import router as task_router
+from routes.tags_routes import router as tags_router
 from db.conn import create_db
 
 app = FastAPI()
@@ -21,4 +22,5 @@ def health_check():
 
 app.include_router(user_router)
 app.include_router(project_router)
-app.include_router(tassk_router)
+app.include_router(task_router)
+app.include_router(tags_router)
