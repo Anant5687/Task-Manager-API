@@ -14,3 +14,4 @@ class TaskModel(BASE):
     status = Column(Enum(TaskStatus))
     priority = Column(Enum(TaskPriority))
     project_id = Column(String)
+    assign = Column(String, nullable=True)

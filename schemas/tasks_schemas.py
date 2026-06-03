@@ -38,3 +38,13 @@ class AllTaskResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class DeleteTaskReq(BaseModel):
+    user_id: str
+
+class StatusUpdate(BaseModel):
+    user_id: str
+    status: TaskStatus
+
+class TaskAssignReq(BaseModel):
+    assignee_id: str
