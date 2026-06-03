@@ -10,7 +10,11 @@ from schemas.tasks_schemas import (
     StatusUpdate,
     TaskAssignReq,
 )
-from schemas.comments_schemas import CommentsRequest, CommentsResponse, CommentsListResponse
+from schemas.comments_schemas import (
+    CommentsRequest,
+    CommentsResponse,
+    CommentsListResponse,
+)
 from models.comments_models import CommentsModel
 
 
@@ -101,4 +105,48 @@ class TaskService:
 
         comments = db.query(CommentsModel).filter(CommentsModel.tid == task_id).all()
 
-        return {"status": 200, "message": "Comments retrieved successfully", "data": comments}
+        return {
+            "status": 200,
+            "message": "Comments retrieved successfully",
+            "data": comments,
+        }
+
+    @staticmethod
+    def check_comment(comment_id: str, db: Session):
+        comment = db.query(CommentsModel).filter(CommentsModel.id == comment_id).first()
+
+        if not comment:
+            raise HTTPException(
+                status_code=404, detail=f"No comment found with this {comment_id}"
+            )
+
+        return comment
+
+    @staticmethod
+    def update_comment(data: CommentsRequest, db: Session) -> CommentsResponse:
+        comment = TaskService.check_comment(data.tid, db)
+
+        for key, value in data.dict().keys():
+            setattr(comment, key, value)
+
+        db.commit()
+        db.refresh(comment)
+
+        return {
+            "status": 200,
+            "message": "Comment updated successfully",
+            "data": comment,
+        }
+
+    @staticmethod
+    def delete_comment(comment_id: str, db: Session) -> CommentsResponse:
+        comment = TaskService.check_comment(comment_id, db)
+
+        db.delete(comment)
+        db.commit()
+
+        return {
+            "status": 200,
+            "message": "Comment deleted successfully",
+            "data": comment,
+        }
