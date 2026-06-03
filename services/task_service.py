@@ -10,6 +10,8 @@ from schemas.tasks_schemas import (
     StatusUpdate,
     TaskAssignReq,
 )
+from schemas.comments_schemas import CommentsRequest, CommentsResponse, CommentsListResponse
+from models.comments_models import CommentsModel
 
 
 class TaskService:
@@ -72,3 +74,31 @@ class TaskService:
             "message": "Task assigned successfully",
             "data": task,
         }
+
+    @staticmethod
+    def add_comment(data: CommentsRequest, db: Session) -> CommentsResponse:
+        task = TaskService.check_task(data.tid, db)
+
+        comment = CommentsModel(
+            id=uuid4(),
+            tid=data.tid,
+            content=data.content,
+            created_at=datetime.utcnow().isoformat() + "Z",
+        )
+
+        db.add(comment)
+        db.commit()
+        db.refresh(comment)
+
+        return {"status": 201, "message": "Comment added successfully", "data": comment}
+
+    @staticmethod
+    def get_comments(task_id: str, db: Session) -> CommentsListResponse:
+        task = TaskService.check_task(task_id, db)
+
+        if not task:
+            raise HTTPException(status_code=404, detail=f"No task found with {task_id}")
+
+        comments = db.query(CommentsModel).filter(CommentsModel.tid == task_id).all()
+
+        return {"status": 200, "message": "Comments retrieved successfully", "data": comments}

@@ -1,4 +1,5 @@
 from sqlalchemy import String, Column, Enum, TIMESTAMP
+from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 from db.conn import BASE
 from models.enums.enums import TaskPriority, TaskStatus
@@ -15,3 +16,4 @@ class TaskModel(BASE):
     priority = Column(Enum(TaskPriority))
     project_id = Column(String)
     assign = Column(String, nullable=True)
+    comments = relationship("CommentsModel", cascade="all, delete-orphan")
