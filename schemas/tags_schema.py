@@ -4,8 +4,8 @@ from uuid import UUID
 
 
 class TagsRequest(BaseModel):
-    name = Field(..., max_length=20)
-    color = Optional[str] = Field(None, max_length=7)
+    name: str =  Field(..., max_length=20)
+    color: str
 
 
 class TaskObj(BaseModel):
