@@ -10,8 +10,11 @@ from schemas.projects_schemas import (
 from services.projects_service import ProjectService
 
 from schemas.tasks_schemas import AllTaskResponse, TaskResponse, TaskCreateRequest
+from utils.helpers import get_current_user
 
-router = APIRouter(prefix="/project", tags=["Projects"])
+router = APIRouter(
+    prefix="/project", tags=["Projects"], dependencies=[Depends(get_current_user)]
+)
 
 
 @router.get("/", response_model=ProjectsResponse)
@@ -50,7 +53,5 @@ def get_all_task_in_project(p_id: str, db: Session = Depends(get_db)):
 
 
 @router.post("/{p_id}/tasks", response_model=TaskResponse)
-def create_task(
-    p_id: str, data: TaskCreateRequest, db: Session = Depends(get_db)
-):
+def create_task(p_id: str, data: TaskCreateRequest, db: Session = Depends(get_db)):
     return ProjectService.create_task(p_id, data, db)

@@ -3,8 +3,11 @@ from schemas.tags_schema import TagsRequest, TagsResponse
 from sqlalchemy.orm import Session
 from db.conn import get_db
 from services.tags_service import TagsService
+from utils.helpers import get_current_user
 
-router = APIRouter(prefix="/tags", tags=["Tags"])
+router = APIRouter(
+    prefix="/tags", tags=["Tags"], dependencies=[Depends(get_current_user)]
+)
 
 
 @router.get("/{tag_id}", response_model=TagsResponse)

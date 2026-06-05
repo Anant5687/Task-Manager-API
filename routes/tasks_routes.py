@@ -13,8 +13,11 @@ from schemas.comments_schemas import (
     CommentsResponse,
     CommentsListResponse,
 )
+from utils.helpers import get_current_user
 
-router = APIRouter(prefix="/task", tags=["Tasks"])
+router = APIRouter(
+    prefix="/task", tags=["Tasks"], dependencies=[Depends(get_current_user)]
+)
 
 
 @router.get("/{id}", response_model=TaskResponse)
