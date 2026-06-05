@@ -6,7 +6,7 @@ import uuid
 from models.file_models import FileModel
 from db.conn import get_db
 
-router = APIRouter()
+router = APIRouter(prefix='/file', tags=["File"])
 
 UPLOAD_DIR = "uploads"
 

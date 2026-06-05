@@ -6,6 +6,7 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 from uuid import uuid4
 
+from utils.helpers import create_hash_password
 
 
 class UserService:
@@ -16,26 +17,25 @@ class UserService:
 
         existing_user = db.query(User).filter(User.email == user_request.email).first()
 
-        if existing_user: 
+        if existing_user:
             raise HTTPException(status_code=400, detail="Email already registered")
 
         user = User(
             id=str(uuid4()),
             full_name=user_request.full_name,
             email=user_request.email,
-            hashed_password="hashed_" + user_request.password,
+            hashed_password=create_hash_password(user_request.password),
             role=user_request.role,
             is_active=True,
-            created_at=datetime.utcnow().isoformat() + "Z"
+            created_at=datetime.utcnow().isoformat() + "Z",
         )
-
 
         db.add(user)
         db.commit()
         db.refresh(user)
 
         return user
-    
+
     @staticmethod
     def get_users(db: Session):
         return db.query(User).all()
